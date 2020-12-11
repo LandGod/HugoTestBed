@@ -5,8 +5,41 @@
         {{ with .Params.subtitle }}
         <span class="subtitle">{{.}}</span>
         {{ end }}
+
+        <!-- Uncomment any one of the following and then run hugo server to see examples -->
     
-        {{ $replacementValues := (dict "some-String" "someOtherString" )}}
+        {{/* Works: */}}
+        {{/* $replacementValues := (dict "someString" "someOtherString" ) */}}
+        {{/* $replacementValues := (dict "some_String" "some_OtherString" ) */}}
+        {{/* $replacementValues := (dict "someAlphaNumeric8376534String" "someOther564654String" ) */}}
+        
+
+        {{/* Build fails on internal spaces */}}
+        {{/* $replacementValues := (dict "some String" "someOtherString" ) */}}
+        {{/* $replacementValues := (dict "someString" "some Other String" ) */}}
+
+        {{/* Build fails with '-' */}}
+        {{/* $replacementValues := (dict "some-String" "someOtherString" ) */}}
+        {{/* $replacementValues := (dict "someString" "some-OtherString" ) */}}
+
+        {{/* Build fails with internal quotes */}}
+        {{/* $replacementValues := (dict "some'withInteralQuotes'String" "someOtherString" ) */}}
+        {{/* $replacementValues := (dict `some"withinteralquotes"String` "someOtherString" ) */}}
+        {{/* $replacementValues := (dict "some\"withescapedinteralquotes\"String" "someOtherString" ) */}}
+
+        {{/* Built fails with '!' */}}
+        {{/* $replacementValues := (dict "some!String" "someOtherString" ) */}}
+        {{/* $replacementValues := (dict "someString" "some!OtherString" ) */}}
+
+        {{/* Built fails with '[]' */}}
+        {{/* $replacementValues := (dict "some[String]" "someOtherString" ) */}}
+        {{/* $replacementValues := (dict "someString" "some[Other]String" ) */}}
+
+        {{/* Built fails with newline character */}}
+        {{/* $replacementValues := (dict "some\nString" "someOtherString" ) */}}
+        {{/* $replacementValues := (dict "someString" "some\nOtherString" ) */}}
+
+        <!-- These test cases are far from exhaustive, but it seems fair to say that basically anything other than alphanumeric strings can be assumed to fail. -->
 
         {{ $testJs := resources.Get "js/test.js" | js.Build (dict "defines" $replacementValues ) }}
 
